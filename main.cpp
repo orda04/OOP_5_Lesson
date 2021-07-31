@@ -1,93 +1,137 @@
 #include <iostream>
 #include <string>
+#include<vector>
+#include"black_jack.h"
 
 using namespace std;
+/*
+enum suit
+{HEARTS=1,
+    DIAMONDS=2,
+          CLUBS=3,
+             SPADES=4 };
+enum rank_1
+{ACE=1,
+    DOUBLE=2,
+       TRIPLE=3,
+          FOUR=4,
+             FIVE=5,
+                SIX=6,
+                  SEVEN=7,
+                     EIGHT=8,
+                        NINE=9,
+                           TEN=10,
+                              JACK=11,
+                                 QUEEN=12,
+                                    KING=13};
 
-template <class T>
-class Pair1
+class Card// карта
 {
-private:
-    T a;
-    T b;
+    bool m_IsFaseUp;
+
+     suit m_suit;
+     rank_1 m_rank;  //тип назван через 1 потому как  в  QT есть конфликт с этим словом //rank m_rank;
+
+
+   public:
+    Card(suit sit,rank_1 rank,bool face=false): m_suit(sit),m_rank(rank),m_IsFaseUp(face)
+      {
+      }
+
+     void Flip()  //
+       {
+        if(m_IsFaseUp)
+        {
+            m_IsFaseUp=false;
+        }
+        else
+        {
+            m_IsFaseUp=true;
+        }
+       }
+    int GetValue()
+    {
+        return m_rank;
+    }
+
+};
+class Hand  // коллекция карт на руках
+{
+ vector <Card> m_Cards;
+
 public:
-
-Pair1(const T& m_first,const T& m_second): a(m_first),b(m_second)
-{
-}
-T&  first()
-{
-   return a;
-}
-const T&first()const
-{
-    return a;
-}
-
-T& second()
-{
-   return b;
-}
-const T&second()const
-{
-    return b;
-}
+ void Add(Card* pCard);
+ void Clear();
+ int GetTotal();
 };
 
 
-template <class T, class S>
-class Pair
+class GenericPlayer:public Hand
 {
-  T a;
-  S b;
+ string m_name;
 public:
-
-  Pair(const T& m_first,const S& m_second): a(m_first),b(m_second)
-  {
-  }
-  T&  first()
-  {
-     return a;
-  }
-  const T&first()const
-  {
-      return a;
-  }
-
-  S& second()
-  {
-     return b;
-  }
-  const S&second()const
-  {
-      return b;
-  }
-
+ virtual bool IsHitting() const=0;
+ bool IsBoosted() const;
+ void Bust() const;
 };
-
-template <class S>
-class StringValuePair:public Pair<string,S>
+class Player:public GenericPlayer
 {
 public:
-    StringValuePair(const string&key, const S& value):Pair<string,S>(key,value)
-    {}
+    virtual bool isHitting() const;
+    void Win() const;
+    void Lose() const;
+    void Push() const;
 };
+class House:public GenericPlayer
+{
+  public:
+    virtual bool isHitting() const;
+    void FlipFirstCarf();
+};
+class Deck: public Hand
+{
+public:
+    void Populate();
+    void Shuffle();
+    void Deal (Hand& aHand);
+    void AdditionalCards(GenericPlayer aGenericPlayer);
+};
+
+class Game
+{
+ Deck m_Deck;
+ House m_House;
+ vector<Player> m_players;
+public:
+ void Play();
+};
+*/
 int main()
 {
-    Pair1<int> p1(6, 9);
-    cout << "Pair1: " << p1.first() << ' ' << p1.second() << '\n';
+  cout<<"\t\t Welcome to BlackJAck\n\n";
 
-    const Pair1<double> p2(3.4, 7.8);
-    cout << "Pair1: " << p2.first() << ' ' << p2.second() << '\n';
-
-
-    Pair<int, double> p3(6, 7.8);
-    cout << "Pair: " << p3.first() << ' ' << p3.second() << '\n';
-
-    const Pair<double, int> p4(3.4, 5);
-    cout << "Pair: " << p4.first() << ' ' << p4.second() << '\n';
-
-
-    StringValuePair<int> svp("Amazing", 7);
-    std::cout << "Pair: " << svp.first() << ' ' << svp.second() << '\n';
+  int numPlayers=0;
+  while(numPlayers<1||numPlayers>7)
+  {
+   cout<<"How many players(1-7): ";
+   cin>>numPlayers;
+  }
+vector<string> names;
+string name;
+for(int i=0;i<numPlayers;++i)
+{
+ cout<<"Enter Player Name: ";
+ cin>>name;
+ names.push_back(name);
+}
+cout<<endl;
+Game aGame(names);
+char again='y';
+while (again != 'n' && again != 'N')
+    {
+      aGame.Play();
+      cout<<"\nDo You want to play again (Y/N):";
+      cin>>again;
+    }
     return 0;
 }
